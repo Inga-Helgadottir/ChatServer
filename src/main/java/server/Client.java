@@ -34,15 +34,11 @@ public class Client {
     }
 
     public void sendMsg(){
-        try {
-            pw.println(username);
+        pw.println(username);
 
-            while(socket.isConnected()){
-                String messageToSend = scan.nextLine();
-                pw.println(username + ": " + messageToSend);
-            }
-        } catch (Exception e) {
-            closeEverything(socket, pw, scan);
+        while(socket.isConnected()){
+            String messageToSend = scan.nextLine();
+            pw.println(username + ": " + messageToSend);
         }
     }
 
@@ -52,12 +48,8 @@ public class Client {
             public void run() {
                 String msgFromGroupChat;
                 while(socket.isConnected()){
-                    try{
-                        msgFromGroupChat = scan.nextLine();
-                        pw.println(msgFromGroupChat);
-                    }catch(Exception e){
-                        closeEverything(socket, pw, scan);
-                    }
+                    msgFromGroupChat = scan.nextLine();
+                    pw.println(msgFromGroupChat);
                 }
             }
         }).start();
