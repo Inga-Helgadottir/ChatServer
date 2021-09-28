@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ClientHandler implements Runnable{
+public class ClientHandler extends Thread {
 
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private Socket socket;
@@ -13,10 +13,10 @@ public class ClientHandler implements Runnable{
     private Scanner scan;
     private String clientUserName;
 
-    public ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket, PrintWriter pw) {
         try {
             this.socket = socket;
-            this.pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.pw = pw;
             this.scan = new Scanner(new InputStreamReader(socket.getInputStream()));
             this.clientUserName = scan.nextLine();
             clientHandlers.add(this);
@@ -64,5 +64,5 @@ public class ClientHandler implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }made clienthandler
+    }
 }

@@ -1,13 +1,17 @@
 package server;
 
 import java.io.IOException;
-import java.net.InetAddress;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ChatServer {
     private ServerSocket ss;
+    public BlockingQueue<String> bq = new ArrayBlockingQueue<>(200);
+
     public ChatServer(ServerSocket ss){
         this.ss = ss;
     }
@@ -15,12 +19,20 @@ public class ChatServer {
     public void startServer(){
         while(!ss.isClosed()) {
             try {
-                Socket s = ss.accept();
-                System.out.println("A new client has connected!");
-                ClientHandler ch = new ClientHandler(s);
+                Dispatcher d = new Dispatcher(bq);
+                d.start();
+                while(true){
+                    System.out.println("Waiting for client!");
+                    Socket s = ss.accept();
+                    System.out.println("A new client has connected!");
+                    PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
 
-                Thread t = new Thread(ch);
-                t.start();
+                    ClientHandler ch = new ClientHandler(s, pw);
+                    d.allWriters.add(pw);
+
+                    Thread t = new Thread(ch);
+                    t.start();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -39,7 +51,7 @@ public class ChatServer {
 
     //Call server with arguments like this: 8088
     public static void main(String[] args) throws IOException {
-        int port = 8088;
+        int port = 8080;
         
         try {
             if (args.length == 1) {
