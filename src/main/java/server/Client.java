@@ -34,6 +34,16 @@ public class Client {
     }
 
     public void sendMsg(){
+        try {
+            pw.println(username);
+
+            while(socket.isConnected()){
+                String messageToSend = scan.nextLine();
+                pw.println(username + ": " + messageToSend);
+            }
+        } catch (Exception e) {
+            closeEverything(socket, pw, scan);
+        }
     }
 
     public void listenForMsgs(){
