@@ -24,15 +24,30 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public void main(String[] args) throws IOException {
         //TODO: change so it checks the hardcoded users
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your username for the group chat: ");
-        String username = scanner.nextLine();
-        Socket socket = new Socket("localhost", 8080);
-        Client client = new Client(socket, username);
+        //TODO: make switch case to handle the users input (in clientHandler) call from here
+        /*
+            input possibilities client to server
+                CONNECT#username
+                SEND#username#message you want to send
+                CLOSE#
+         */
+        ClientHandler.whatToDo();
 //        client.listenForMsgs();
 //        client.sendMsg();
+    }
+
+    public static void connectClient(String userName){
+        try {
+            String username = userName;
+            Socket socket = new Socket("localhost", 8080);
+            Client client = new Client(socket, username);
+            //TODO: call the send and listen to messages here
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 //    public void sendMsg(){

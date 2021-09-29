@@ -8,9 +8,9 @@ import java.util.Scanner;
 public class ClientHandler extends Thread {
 
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
-    private Socket socket;
-    private PrintWriter pw;
-    private BufferedReader br;
+    private static Socket socket;
+    private static PrintWriter pw;
+    private static BufferedReader br;
     private String clientUserName;
 
     public ClientHandler(Socket socket, PrintWriter pw) {
@@ -71,6 +71,52 @@ public class ClientHandler extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void whatToDo() throws IOException {
+        String msg = "";
+        String dataString = "";
+        String dataString2 = "";
+        while(!msg.equals("CLOSE#")) {
+            msg = br.readLine();
+            String[] msgArr = msg.split("#");
+            String action = msgArr[0].toUpperCase();
+            if (msgArr.length > 1) {
+                dataString = msgArr[1];
+            }
+            if(msgArr.length > 2){
+                dataString2 = msgArr[2];
+            }
+            switch (action) {
+                case "CONNECT":
+                    Client.connectClient(dataString);
+                    break;
+                case "SEND":
+                    if(dataString.contains("*")){
+                        //send message to all
+                    }else{
+                        //send message to given user/users
+                    }
+                    break;
+                default:
+                    msg = "CLOSE#";
+            }
+        }
+        socket.close();
+        pw.println(msg + " hej fra server");
+    }
+
+    private void sendMsg(String username, String msg) {
+
+        try {
+            pw.println(username);
+
+            while(socket.isConnected()){
+                pw.println(username + ": " + msg);
+            }
+        } catch (IOException e) {
+            closeEverything(socket, pw, br);
         }
     }
 }
