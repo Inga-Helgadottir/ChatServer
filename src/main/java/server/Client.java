@@ -36,15 +36,12 @@ public class Client {
          */
 //        ClientHandler.whatToDo();
         connectClient("inga");
-//        client.listenForMsgs();
-//        client.sendMsg();
     }
 
     public static void connectClient(String userName){
         try {
             String username = userName;
             Socket socket = new Socket("localhost", 8080);
-//            Client client = new Client(socket, username);
             Scanner scan = new Scanner(socket.getInputStream());
             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
             pw.println("CONNECT#inga");
@@ -57,33 +54,6 @@ public class Client {
         }
 
     }
-
-//    public void sendMsg(){
-//        pw.println(username);
-//
-//        while(socket.isConnected()){
-//            String messageToSend = scan.nextLine();
-//            pw.println(username + ": " + messageToSend);
-//        }
-//    }
-
-
-//    public void listenForMsgs(){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String msgFromGroupChat;
-//                while(socket.isConnected()){
-//                    try {
-//                        msgFromGroupChat = br.readLine();
-//                        pw.println(msgFromGroupChat);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).start();
-//    }
 
     private void closeEverything(Socket socket, PrintWriter pw, BufferedReader br) {
         try {

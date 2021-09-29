@@ -8,17 +8,12 @@ import java.util.Scanner;
 public class ClientHandler extends Thread {
 
     public static ArrayList<ClientHandler> clientHandlers;
-    private static Socket socket;
     private static PrintWriter pw;
-    private static BufferedReader br;
     private Scanner sc;
-    private String clientUserName;
 
     public ClientHandler(Scanner sc, PrintWriter pw, ArrayList<ClientHandler> clientHandlers) {
         this.sc = sc;
         this.pw = pw;
-//            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            this.clientUserName = br.readLine();
         this.clientHandlers = clientHandlers;
     }
 
@@ -30,27 +25,23 @@ public class ClientHandler extends Thread {
     public void protocol(){
         String messageFromClient;
 
-        while (socket.isConnected()){
-            try {
-                messageFromClient = br.readLine();
-                broadcastMessage(messageFromClient);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        while (true){
+            messageFromClient = sc.nextLine();
+            broadcastMessage(messageFromClient);
         }
     }
 
     public void broadcastMessage(String messageToSend){
-        for (ClientHandler clientHandler : clientHandlers) {
-            if (!clientHandler.clientUserName.equals(clientUserName)) {
-                clientHandler.pw.println(messageToSend);
-            }
-        }
+//        for (ClientHandler clientHandler : clientHandlers) {
+//            if (!clientHandler.clientUserName.equals(clientUserName)) {
+//                clientHandler.pw.println(messageToSend);
+//            }
+//        }
     }
 
     public void removeClientHandler(){
         clientHandlers.remove(this);
-        broadcastMessage("SERVER : " + clientUserName + " has left the chat!");
+        broadcastMessage("SERVER : " + this + " has left the chat!");
     }
 
     private void closeEverything(Socket socket, PrintWriter pw, BufferedReader br) {
@@ -70,12 +61,12 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public static void whatToDo() throws IOException {
+    public void whatToDo() throws IOException {
         String msg = "";
         String dataString = "";
         String dataString2 = "";
         while(!msg.equals("CLOSE#")) {
-            msg = br.readLine();
+            msg = sc.nextLine();
             String[] msgArr = msg.split("#");
             String action = msgArr[0].toUpperCase();
             if (msgArr.length > 1) {
@@ -99,16 +90,6 @@ public class ClientHandler extends Thread {
                     msg = "CLOSE#";
             }
         }
-        socket.close();
         pw.println(msg + " hej fra server");
-    }
-
-    private void sendMsg(String username, String msg) {
-
-        pw.println(username);
-
-        while(socket.isConnected()){
-            pw.println(username + ": " + msg);
-        }
     }
 }

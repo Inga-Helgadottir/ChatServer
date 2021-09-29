@@ -58,7 +58,6 @@ public class ChatServer {
                         clientHandlers.add(ch);
 
                     }
-//                    broadcastMessage("SERVER: " + clientUserName + " has entered the chat!");
                     bq.add("SERVER: " + arr[1] + " has entered the chat!");
 
                     ch.start();
