@@ -1,13 +1,15 @@
 package server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
     private Socket socket;
-    private Scanner scan;
+    private static BufferedReader br;
     private PrintWriter pw;
     private String username;
 
@@ -15,10 +17,10 @@ public class Client {
         try {
             this.socket = socket;
             this.pw = new PrintWriter(socket.getOutputStream(), true);
-            this.scan = new Scanner(socket.getInputStream());
+            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username = username;
         } catch (IOException e) {
-            closeEverything(socket, pw, scan);
+            closeEverything(socket, pw, br);
         }
     }
 
@@ -29,39 +31,44 @@ public class Client {
         String username = scanner.nextLine();
         Socket socket = new Socket("localhost", 8080);
         Client client = new Client(socket, username);
-        client.listenForMsgs();
-        client.sendMsg();
+//        client.listenForMsgs();
+//        client.sendMsg();
     }
 
-    public void sendMsg(){
-        pw.println(username);
+//    public void sendMsg(){
+//        pw.println(username);
+//
+//        while(socket.isConnected()){
+//            String messageToSend = scan.nextLine();
+//            pw.println(username + ": " + messageToSend);
+//        }
+//    }
 
-        while(socket.isConnected()){
-            String messageToSend = scan.nextLine();
-            pw.println(username + ": " + messageToSend);
-        }
-    }
 
-    public void listenForMsgs(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String msgFromGroupChat;
-                while(socket.isConnected()){
-                    msgFromGroupChat = scan.nextLine();
-                    pw.println(msgFromGroupChat);
-                }
-            }
-        }).start();
-    }
+//    public void listenForMsgs(){
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String msgFromGroupChat;
+//                while(socket.isConnected()){
+//                    try {
+//                        msgFromGroupChat = br.readLine();
+//                        pw.println(msgFromGroupChat);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+//    }
 
-    private void closeEverything(Socket socket, PrintWriter pw, Scanner scan) {
+    private void closeEverything(Socket socket, PrintWriter pw, BufferedReader br) {
         try {
             if(pw != null){
                 pw.close();
             }
-            if(scan != null){
-                scan.close();
+            if(br != null){
+                br.close();
             }
             if(socket != null){
                 socket.close();

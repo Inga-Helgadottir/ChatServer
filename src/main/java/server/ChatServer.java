@@ -16,6 +16,23 @@ public class ChatServer {
         this.ss = ss;
     }
 
+    //Call server with arguments like this: 8080
+    public static void main(String[] args) throws IOException {
+        int port = 8080;
+
+        try {
+            if (args.length == 1) {
+                port = Integer.parseInt(args[0]);
+            }
+            ServerSocket serverSocket = new ServerSocket(port);
+            ChatServer server = new ChatServer(serverSocket);
+            server.startServer();
+        } catch (NumberFormatException ne) {
+            System.out.println("Illegal inputs provided when starting the server!");
+            return;
+        }
+    }
+
     public void startServer(){
         while(!ss.isClosed()) {
             try {
@@ -25,13 +42,11 @@ public class ChatServer {
                     System.out.println("Waiting for client!");
                     Socket s = ss.accept();
                     System.out.println("A new client has connected!");
-                    PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
 
+                    PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
                     ClientHandler ch = new ClientHandler(s, pw);
                     d.allWriters.add(pw);
-
-                    Thread t = new Thread(ch);
-                    t.start();
+                    ch.start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -47,26 +62,5 @@ public class ChatServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    //Call server with arguments like this: 8088
-    public static void main(String[] args) throws IOException {
-        int port = 8080;
-        
-        try {
-            if (args.length == 1) {
-                port = Integer.parseInt(args[0]);
-            }
-            else {
-                throw new IllegalArgumentException("Server not provided with the right arguments");
-            }
-        } catch (NumberFormatException ne) {
-            System.out.println("Illegal inputs provided when starting the server!");
-            return;
-        }
-
-        ServerSocket serverSocket = new ServerSocket(port);
-        ChatServer server = new ChatServer(serverSocket);
-        server.startServer();
     }
 }
