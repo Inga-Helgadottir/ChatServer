@@ -1,13 +1,15 @@
 package server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
     private Socket socket;
-    private Scanner scan;
+    private static BufferedReader br;
     private PrintWriter pw;
     private String username;
 
@@ -15,61 +17,51 @@ public class Client {
         try {
             this.socket = socket;
             this.pw = new PrintWriter(socket.getOutputStream(), true);
-            this.scan = new Scanner(socket.getInputStream());
+            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username = username;
         } catch (IOException e) {
-            closeEverything(socket, pw, scan);
+            closeEverything(socket, pw, br);
         }
     }
 
     public static void main(String[] args) throws IOException {
+        String username = args[0];
         //TODO: change so it checks the hardcoded users
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your username for the group chat: ");
-        String username = scanner.nextLine();
-        Socket socket = new Socket("localhost", 8080);
-        Client client = new Client(socket, username);
-        client.listenForMsgs();
-        client.sendMsg();
+        //TODO: make switch case to handle the users input (in clientHandler) call from here
+        /*
+            input possibilities client to server
+                CONNECT#username
+                SEND#username#message you want to send
+                CLOSE#
+         */
+//        ClientHandler.whatToDo();
+        connectClient("inga");
     }
 
-    public void sendMsg(){
+    public static void connectClient(String userName){
         try {
-            pw.println(username);
+            String username = userName;
+            Socket socket = new Socket("localhost", 8080);
+            Scanner scan = new Scanner(socket.getInputStream());
+            PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+            pw.println("CONNECT#inga");
+            String returnMsg = scan.nextLine();
+            System.out.println(returnMsg);
 
-            while(socket.isConnected()){
-                String messageToSend = scan.nextLine();
-                pw.println(username + ": " + messageToSend);
-            }
-        } catch (Exception e) {
-            closeEverything(socket, pw, scan);
+            //TODO: call the send and listen to messages here
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
-    public void listenForMsgs(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String msgFromGroupChat;
-                while(socket.isConnected()){
-                    try{
-                        msgFromGroupChat = scan.nextLine();
-                        pw.println(msgFromGroupChat);
-                    }catch(Exception e){
-                        closeEverything(socket, pw, scan);
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private void closeEverything(Socket socket, PrintWriter pw, Scanner scan) {
+    private void closeEverything(Socket socket, PrintWriter pw, BufferedReader br) {
         try {
             if(pw != null){
                 pw.close();
             }
-            if(scan != null){
-                scan.close();
+            if(br != null){
+                br.close();
             }
             if(socket != null){
                 socket.close();
