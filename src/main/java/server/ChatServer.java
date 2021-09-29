@@ -48,15 +48,16 @@ public class ChatServer {
                     System.out.println("A new client has connected!");
 
                     PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
-                    d.allWriters.add(pw);
+                    d.addToWriterList(pw);
                     Scanner sc = new Scanner(s.getInputStream());
                     //TODO: husk validering af userinput
                     String enterMsg = sc.nextLine();
+                    System.out.println(enterMsg);
                     String[] arr = enterMsg.split("#");
-                    ClientHandler ch = new ClientHandler(sc, pw, clientHandlers);
+                    ClientHandler ch = new ClientHandler(sc, pw, clientHandlers, arr[1], bq);
+                    d.addToWriterList(pw);
                     synchronized (this){
                         clientHandlers.add(ch);
-
                     }
                     bq.add("SERVER: " + arr[1] + " has entered the chat!");
 

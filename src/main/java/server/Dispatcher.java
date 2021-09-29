@@ -1,7 +1,6 @@
 package server;
 
 import java.io.PrintWriter;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -27,6 +26,7 @@ public class Dispatcher extends Thread {
     }
 
     private void sendMsgToAll(String msg) {
+        System.out.println(msg);
         for (PrintWriter pw : allWriters) {
             pw.println(msg);
         }
