@@ -3,14 +3,15 @@ package server;
 import java.io.PrintWriter;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Dispatcher extends Thread {
     BlockingQueue<String> messages;
-    BlockingQueue<PrintWriter> allWriters;
+    CopyOnWriteArrayList<PrintWriter> allWriters;
 
     public Dispatcher(BlockingQueue<String> queue) {
         this.messages = queue;
-        this.allWriters = new ArrayBlockingQueue<>(200);
+        this.allWriters = new CopyOnWriteArrayList<>();
     }
 
     @Override

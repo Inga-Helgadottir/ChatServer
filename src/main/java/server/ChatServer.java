@@ -5,15 +5,19 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class ChatServer {
     private ServerSocket ss;
     public BlockingQueue<String> bq = new ArrayBlockingQueue<>(200);
+    public ArrayList<ClientHandler> clientHandlers;
 
     public ChatServer(ServerSocket ss){
         this.ss = ss;
+        this.clientHandlers = new ArrayList<>();
     }
 
     //Call server with arguments like this: 8080
@@ -44,8 +48,19 @@ public class ChatServer {
                     System.out.println("A new client has connected!");
 
                     PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
-                    ClientHandler ch = new ClientHandler(s, pw);
                     d.allWriters.add(pw);
+                    Scanner sc = new Scanner(s.getInputStream());
+                    //TODO: husk validering af userinput
+                    String enterMsg = sc.nextLine();
+                    String[] arr = enterMsg.split("#");
+                    ClientHandler ch = new ClientHandler(sc, pw, clientHandlers);
+                    synchronized (this){
+                        clientHandlers.add(ch);
+
+                    }
+//                    broadcastMessage("SERVER: " + clientUserName + " has entered the chat!");
+                    bq.add("SERVER: " + arr[1] + " has entered the chat!");
+
                     ch.start();
                 }
             } catch (IOException e) {

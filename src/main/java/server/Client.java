@@ -24,7 +24,8 @@ public class Client {
         }
     }
 
-    public void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
+        String username = args[0];
         //TODO: change so it checks the hardcoded users
         //TODO: make switch case to handle the users input (in clientHandler) call from here
         /*
@@ -33,7 +34,8 @@ public class Client {
                 SEND#username#message you want to send
                 CLOSE#
          */
-        ClientHandler.whatToDo();
+//        ClientHandler.whatToDo();
+        connectClient("inga");
 //        client.listenForMsgs();
 //        client.sendMsg();
     }
@@ -42,7 +44,13 @@ public class Client {
         try {
             String username = userName;
             Socket socket = new Socket("localhost", 8080);
-            Client client = new Client(socket, username);
+//            Client client = new Client(socket, username);
+            Scanner scan = new Scanner(socket.getInputStream());
+            PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+            pw.println("CONNECT#inga");
+            String returnMsg = scan.nextLine();
+            System.out.println(returnMsg);
+
             //TODO: call the send and listen to messages here
         } catch (IOException e) {
             e.printStackTrace();

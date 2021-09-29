@@ -7,23 +7,19 @@ import java.util.Scanner;
 
 public class ClientHandler extends Thread {
 
-    public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+    public static ArrayList<ClientHandler> clientHandlers;
     private static Socket socket;
     private static PrintWriter pw;
     private static BufferedReader br;
+    private Scanner sc;
     private String clientUserName;
 
-    public ClientHandler(Socket socket, PrintWriter pw) {
-        try {
-            this.socket = socket;
-            this.pw = pw;
-            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.clientUserName = br.readLine();
-            clientHandlers.add(this);
-            broadcastMessage("SERVER: " + clientUserName + " has entered the chat!");
-        } catch (IOException e) {
-            closeEverything(socket, pw, br);
-        }
+    public ClientHandler(Scanner sc, PrintWriter pw, ArrayList<ClientHandler> clientHandlers) {
+        this.sc = sc;
+        this.pw = pw;
+//            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//            this.clientUserName = br.readLine();
+        this.clientHandlers = clientHandlers;
     }
 
     @Override
@@ -109,14 +105,10 @@ public class ClientHandler extends Thread {
 
     private void sendMsg(String username, String msg) {
 
-        try {
-            pw.println(username);
+        pw.println(username);
 
-            while(socket.isConnected()){
-                pw.println(username + ": " + msg);
-            }
-        } catch (IOException e) {
-            closeEverything(socket, pw, br);
+        while(socket.isConnected()){
+            pw.println(username + ": " + msg);
         }
     }
 }
