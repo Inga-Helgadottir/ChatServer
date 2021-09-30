@@ -32,11 +32,17 @@ public class ClientHandler extends Thread {
     }
 
     public void protocol() throws InterruptedException {
-        String messageFromClient;
-        pw.println("Broadcast message:");
-        while (true){
+        String messageFromClient="";
+        messageFromClient = sc.nextLine();
+//        pw.println("Broadcast message:");
+
+        pw.println("server: " + messageFromClient);
+        while (!messageFromClient.equals("CLOSE#")){
             messageFromClient = sc.nextLine();
-            que.put(messageFromClient);
+            pw.println("You send " +messageFromClient);
+//            que.put(messageFromClient);
+//            String str = sc.nextLine();
+
 //            try {
 //                this.whatToDo();
 //            } catch (IOException e) {

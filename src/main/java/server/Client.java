@@ -13,6 +13,7 @@ public class Client {
     private static BufferedReader br;
     private static PrintWriter pw;
     private String username;
+    private Scanner keyboard;
 
     public Client(Socket socket, String username)  {
         try {
@@ -20,6 +21,7 @@ public class Client {
             this.pw = new PrintWriter(socket.getOutputStream(), true);
             this.br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username = username;
+            this.keyboard = new Scanner(System.in);
         } catch (IOException e) {
             closeEverything(socket, pw, br);
         }
@@ -33,6 +35,8 @@ public class Client {
             input possibilities client to server
                 CONNECT#username
                 SEND#username#message you want to send
+                SEND#username, anotherUsername#message you want to send
+                SEND#*#message you want to send to all
                 CLOSE#
          */
         connectClient("inga");
@@ -40,16 +44,20 @@ public class Client {
 
     public static void connectClient(String userName){
         try {
-            String username = userName;
+
+            String returnMsg="";
             Scanner scanner = new Scanner(System.in);
             Socket socket = new Socket("localhost", 8080);
             Scanner scan = new Scanner(socket.getInputStream());
             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-            pw.println("CONNECT#inga");
-            String returnMsg = scan.nextLine();
+            System.out.println("CLIENT: indtast brugernavn:");
+            String username = scanner.nextLine();
+            pw.println("CONNECT#"+username);
+            returnMsg = scan.nextLine();
             while(!returnMsg.equals("CLOSE#")){
                 pw.println(scanner.nextLine());
-                System.out.println(scan.nextLine());
+                returnMsg = scan.nextLine();
+                System.out.println("SERVERsend: "+returnMsg);
             }
             System.out.println(returnMsg);
             socket.close();

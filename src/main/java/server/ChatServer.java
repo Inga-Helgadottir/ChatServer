@@ -37,13 +37,13 @@ public class ChatServer {
         }
     }
 
-    public void startServer(){
-        while(!ss.isClosed()) {
-            try {
+    public void startServer() throws IOException {
+
                 Dispatcher d = new Dispatcher(bq);
                 d.start();
-                while(true){
-                    System.out.println("Waiting for client!");
+        System.out.println("Waiting for client!");
+                while(!ss.isClosed()){
+
                     Socket s = ss.accept();
                     System.out.println("A new client has connected!");
 
@@ -54,19 +54,17 @@ public class ChatServer {
                     String enterMsg = sc.nextLine();
                     System.out.println(enterMsg);
                     String[] arr = enterMsg.split("#");
+                    pw.println("hello#" + arr[1]);
                     ClientHandler ch = new ClientHandler(sc, pw, clientHandlers, arr[1], bq);
+                    //TODO: valider bruger datastruktur
                     d.addToWriterList(pw);
-                    synchronized (this){
-                        clientHandlers.add(ch);
-                    }
-                    bq.add("SERVER: " + arr[1] + " has entered the chat!");
+                    clientHandlers.add(ch);
+                   bq.add("SERVER: " + arr[1] + " has entered the chat!");
 
                     ch.start();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
+
     }
 
     public void closeServerSocket(){
