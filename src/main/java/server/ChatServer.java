@@ -39,30 +39,30 @@ public class ChatServer {
 
     public void startServer() throws IOException {
 
-                Dispatcher d = new Dispatcher(bq);
-                d.start();
-        System.out.println("Waiting for client!");
-                while(!ss.isClosed()){
+            Dispatcher d = new Dispatcher(bq);
+            d.start();
+            System.out.println("Waiting for client!");
+            while(!ss.isClosed()){
 
-                    Socket s = ss.accept();
-                    System.out.println("A new client has connected!");
+                Socket s = ss.accept();
+                System.out.println("A new client has connected!");
 
-                    PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
-                    d.addToWriterList(pw);
-                    Scanner sc = new Scanner(s.getInputStream());
-                    //TODO: husk validering af userinput
-                    String enterMsg = sc.nextLine();
-                    System.out.println(enterMsg);
-                    String[] arr = enterMsg.split("#");
-                    pw.println("hello#" + arr[1]);
-                    ClientHandler ch = new ClientHandler(sc, pw, clientHandlers, arr[1], bq);
-                    //TODO: valider bruger datastruktur
-                    d.addToWriterList(pw);
-                    clientHandlers.add(ch);
-                   bq.add("SERVER: " + arr[1] + " has entered the chat!");
+                PrintWriter pw = new PrintWriter(new OutputStreamWriter(s.getOutputStream()), true);
+                d.addToWriterList(pw);
+                Scanner sc = new Scanner(s.getInputStream());
+                //TODO: husk validering af userinput
+                String enterMsg = sc.nextLine();
+//                System.out.println(enterMsg);
+                String[] arr = enterMsg.split("#");
+                bq.add("SERVER: " + arr[1] + " has entered the chat!");
+//                pw.println("hello#" + arr[1]);
+                ClientHandler ch = new ClientHandler(sc, pw, clientHandlers, arr[1], bq);
+                //TODO: valider bruger datastruktur
+//                d.addToWriterList(pw);
+                clientHandlers.add(ch);
 
-                    ch.start();
-                }
+                ch.start();
+            }
 
 
     }

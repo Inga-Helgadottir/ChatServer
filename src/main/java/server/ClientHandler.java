@@ -33,13 +33,13 @@ public class ClientHandler extends Thread {
 
     public void protocol() throws InterruptedException {
         String messageFromClient="";
-        messageFromClient = sc.nextLine();
+//        messageFromClient = sc.nextLine();
 //        pw.println("Broadcast message:");
 
         pw.println("server: " + messageFromClient);
         while (!messageFromClient.equals("CLOSE#")){
             messageFromClient = sc.nextLine();
-            pw.println("You send " +messageFromClient);
+            pw.println("You sent " + messageFromClient);
 //            que.put(messageFromClient);
 //            String str = sc.nextLine();
 
@@ -48,6 +48,10 @@ public class ClientHandler extends Thread {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
+            if(messageFromClient.equals("CLOSE#")){
+                this.removeClientHandler();
+                break;
+            }
         }
     }
 

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -44,24 +43,22 @@ public class Client {
 
     public static void connectClient(String userName){
         try {
-
-            String returnMsg="";
+            String returnMsg = "";
             Scanner scanner = new Scanner(System.in);
-            Socket socket = new Socket("localhost", 8080);
+            socket = new Socket("localhost", 8080);
             Scanner scan = new Scanner(socket.getInputStream());
             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
             System.out.println("CLIENT: indtast brugernavn:");
             String username = scanner.nextLine();
-            pw.println("CONNECT#"+username);
+            pw.println("CONNECT#" + username);
             returnMsg = scan.nextLine();
             while(!returnMsg.equals("CLOSE#")){
+                System.out.println("SERVERsend: " + returnMsg);
                 pw.println(scanner.nextLine());
                 returnMsg = scan.nextLine();
-                System.out.println("SERVERsend: "+returnMsg);
             }
-            System.out.println(returnMsg);
+//            System.out.println(returnMsg);
             socket.close();
-
 
             //TODO: call the send and listen to messages here
         } catch (IOException e) {
