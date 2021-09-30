@@ -8,9 +8,9 @@ import java.util.concurrent.BlockingQueue;
 
 public class ClientHandler extends Thread {
 
-    public static ArrayList<ClientHandler> clientHandlers;
-    private static PrintWriter pw;
-    private static Scanner sc;
+    public  ArrayList<ClientHandler> clientHandlers;
+    private  PrintWriter pw;
+    private  Scanner sc;
     private String clientUserName;
     BlockingQueue<String> que;
 
@@ -36,7 +36,7 @@ public class ClientHandler extends Thread {
 //        messageFromClient = sc.nextLine();
 //        pw.println("Broadcast message:");
 
-        pw.println("server: " + messageFromClient);
+//        pw.println("server: " + messageFromClient);
         while (!messageFromClient.equals("CLOSE#")){
             messageFromClient = sc.nextLine();
             pw.println("You sent " + messageFromClient);
@@ -48,10 +48,6 @@ public class ClientHandler extends Thread {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-            if(messageFromClient.equals("CLOSE#")){
-                this.removeClientHandler();
-                break;
-            }
         }
     }
 
@@ -59,6 +55,7 @@ public class ClientHandler extends Thread {
         clientHandlers.remove(this);
     }
 
+    /*
     public static void whatToDo() throws IOException {
         String msg = "";
         String dataString = "";
@@ -97,6 +94,8 @@ public class ClientHandler extends Thread {
         }
         pw.println(msg + " hej fra server");
     }
+
+     */
 
     private void closeEverything(Socket socket, PrintWriter pw, BufferedReader br) {
         removeClientHandler();

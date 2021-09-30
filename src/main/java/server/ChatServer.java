@@ -42,7 +42,7 @@ public class ChatServer {
             Dispatcher d = new Dispatcher(bq);
             d.start();
             System.out.println("Waiting for client!");
-            while(!ss.isClosed()){
+            while(true){
 
                 Socket s = ss.accept();
                 System.out.println("A new client has connected!");
@@ -63,8 +63,6 @@ public class ChatServer {
 
                 ch.start();
             }
-
-
     }
 
     public void closeServerSocket(){

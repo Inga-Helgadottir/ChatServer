@@ -48,9 +48,11 @@ public class Client {
             socket = new Socket("localhost", 8080);
             Scanner scan = new Scanner(socket.getInputStream());
             PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+
             System.out.println("CLIENT: indtast brugernavn:");
             String username = scanner.nextLine();
             pw.println("CONNECT#" + username);
+
             returnMsg = scan.nextLine();
             while(!returnMsg.equals("CLOSE#")){
                 System.out.println("SERVERsend: " + returnMsg);
@@ -64,8 +66,6 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void closeEverything(Socket socket, PrintWriter pw, BufferedReader br) {
